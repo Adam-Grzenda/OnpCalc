@@ -15,7 +15,8 @@ class Calculator(private val context: Context, private val viewUpdateObserver: V
         DIVISION,
         MULTIPLICATION,
         EXP,
-        SQ_ROOT
+        SQ_ROOT,
+        SIGN_CHANGE
     }
 
     enum class Action {
@@ -47,21 +48,26 @@ class Calculator(private val context: Context, private val viewUpdateObserver: V
                     doBinaryOperation(operation, b, a)
                 }
             } catch (e: ArithmeticException) {
-                displayToast("Could not perform operation: ${e.localizedMessage}")
+                displayToast("Could not perform operation: ${e.message}")
             } catch (e: UnsupportedOperationException) {
-                displayToast("Unsupported operation: ${e.localizedMessage}")
+                displayToast("Unsupported operation: ${e.message}")
             }
         }
 
     }
 
     fun perform(action: Action) {
-        when (action) {
-            Action.AC -> clearValues()
-            Action.DROP -> popValue()
-            Action.SWAP -> swapTopValues()
-            Action.UNDO -> restorePreviousState()
+        try {
+            when (action) {
+                Action.AC -> clearValues()
+                Action.DROP -> popValue()
+                Action.SWAP -> swapTopValues()
+                Action.UNDO -> restorePreviousState()
+            }
+        } catch (e: ArithmeticException) {
+            e.message?.let { displayToast(it) }
         }
+
     }
 
 
@@ -70,11 +76,13 @@ class Calculator(private val context: Context, private val viewUpdateObserver: V
         a: BigDecimal
     ) {
         stack.clone()
-        if (operation == Operation.SQ_ROOT) {
-            pushValue(a.sqrt(SCALE))
-        } else {
-            throw UnsupportedOperationException("Unexpected unary operation")
+
+        when (operation) {
+            Operation.SQ_ROOT -> pushValue(a.sqrt(SCALE))
+            Operation.SIGN_CHANGE -> pushValue(a.multiply(BigDecimal(-1)))
+            else -> throw UnsupportedOperationException("Unexpected unary operation")
         }
+
     }
 
 
@@ -95,7 +103,7 @@ class Calculator(private val context: Context, private val viewUpdateObserver: V
     }
 
 
-    private fun pushValue(value: BigDecimal) {
+    fun pushValue(value: BigDecimal) {
         stack.push(value)
         sendUpdate()
     }
@@ -107,6 +115,8 @@ class Calculator(private val context: Context, private val viewUpdateObserver: V
     private fun popValue(): BigDecimal {
         try {
             return stack.pop()
+        } catch (e: EmptyStackException) {
+            throw ArithmeticException("No values on stack")
         } finally {
             sendUpdate()
         }
@@ -118,11 +128,16 @@ class Calculator(private val context: Context, private val viewUpdateObserver: V
     }
 
     private fun swapTopValues() {
-        val a = popValue()
-        val b = popValue()
+        try {
+            val a = popValue()
+            val b = popValue()
 
-        pushValue(a)
-        pushValue(b)
+            pushValue(a)
+            pushValue(b)
+        } catch (e: ArithmeticException) {
+            throw ArithmeticException("Not enough values to swap")
+        }
+
     }
 
     private fun displayToast(text: String) {

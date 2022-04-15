@@ -41,31 +41,66 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
                 R.id.seven -> "7"
                 R.id.eight -> "8"
                 R.id.nine -> "9"
-                else -> throw UnsupportedOperationException("Input button not mapped for number")
+                R.id.dot -> "." //todo do not allow a dot following another dot
+                else -> throw UnsupportedOperationException("Input button not mapped for a number")
             }
             inputValueBuilder.append(value)
-
+            updateInputView(inputValueBuilder.toString());
 
         } catch (e: UnsupportedOperationException) {
-            Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
         }
     }
 
     fun onClickOperator(v: View) {
-
+        try {
+            val operation: Calculator.Operation = when (v.id) {
+                R.id.plus -> Calculator.Operation.DIVISION
+                R.id.minus -> Calculator.Operation.SUBTRACTION
+                R.id.multiply -> Calculator.Operation.MULTIPLICATION
+                R.id.divide -> Calculator.Operation.DIVISION
+                R.id.exp -> Calculator.Operation.EXP
+                R.id.squareRoot -> Calculator.Operation.SQ_ROOT
+                R.id.sign_change -> Calculator.Operation.SIGN_CHANGE
+                else -> throw UnsupportedOperationException("Input button not mapped for an operation")
+            }
+            calculator.calculate(operation)
+        } catch (e: UnsupportedOperationException) {
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
-    fun onClickDrop(v: View) {
-
+    fun onClickAction(v: View) {
+        try {
+            val action: Calculator.Action = when (v.id) {
+                R.id.AC -> Calculator.Action.AC
+                R.id.drop -> Calculator.Action.DROP
+                R.id.swap -> Calculator.Action.SWAP
+                else -> throw UnsupportedOperationException("Input button not mapped for an action")
+            }
+            calculator.perform(action)
+        } catch (e: UnsupportedOperationException) {
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
-    fun onClickSwap(v: View) {
-
+    fun onEnter(view: View) {
+        try {
+            calculator.pushValue(inputValueBuilder.toString().toBigDecimal())
+            clearInput()
+        } catch (e: NumberFormatException) {
+            Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    fun onEnter(view: View) {}
+    private fun clearInput() {
+        this.inputValueBuilder.clear()
+        updateInputView("")
+    }
 
-    fun onClickClear(view: View) {}
+    private fun updateInputView(inputValue: String) {
+        this.inputValueView.text = inputValue
+    }
 
     override fun updateView(newValue: List<BigDecimal>) {
         updateStackView(
@@ -77,23 +112,28 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
     private fun updateStackView(values: List<String>) {
         stackView.minValue = 0
-        val stackSize = values.size - 1
+        val newMaxValue = values.size - 1
 
-        if (stackView.maxValue > stackSize) {
-            stackView.maxValue = if (stackSize > 0) stackSize else 0;
+        if (stackView.maxValue >= newMaxValue) {
+            stackView.maxValue = if (newMaxValue > 0) newMaxValue else 0;
 
-            if (stackView.maxValue == 0) {
+            if (values.size == 0) {
                 stackView.displayedValues = arrayOf("No elements")
             } else {
                 stackView.displayedValues = values.toTypedArray()
             }
         } else {
             stackView.displayedValues = values.toTypedArray()
-            stackView.maxValue = stackSize
+            stackView.maxValue = newMaxValue
         }
     }
 
-    fun onClickBack(view: View) {}
+    fun onClickBack(view: View) {
+        if (inputValueBuilder.isNotEmpty()) {
+            inputValueBuilder.deleteAt(inputValueBuilder.length - 1)
+            updateInputView(inputValueBuilder.toString())
+        }
+    }
 
 
 }
