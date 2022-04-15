@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
         this.stackView = findViewById(R.id.stackView)
         this.stackView.wrapSelectorWheel = false
+        this.stackView.displayedValues = arrayOf("No elements")
 
         this.inputValueView = findViewById(R.id.inputView)
     }
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     fun onClickOperator(v: View) {
         try {
             val operation: Calculator.Operation = when (v.id) {
-                R.id.plus -> Calculator.Operation.DIVISION
+                R.id.plus -> Calculator.Operation.ADDITION
                 R.id.minus -> Calculator.Operation.SUBTRACTION
                 R.id.multiply -> Calculator.Operation.MULTIPLICATION
                 R.id.divide -> Calculator.Operation.DIVISION
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
                 R.id.AC -> Calculator.Action.AC
                 R.id.drop -> Calculator.Action.DROP
                 R.id.swap -> Calculator.Action.SWAP
+                R.id.undo -> Calculator.Action.UNDO
                 else -> throw UnsupportedOperationException("Input button not mapped for an action")
             }
             calculator.perform(action)
