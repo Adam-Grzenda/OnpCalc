@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">OnpCalc</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="display_header">Display</string>
+    <string name="math_header">Mathematical</string>
+
+    <!-- Display Preferences -->
+    <string name="background_title">Background color</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Mathematical Preferences -->
+    <string name="accuracy_title">Decimal accuracy</string>
 </resources>

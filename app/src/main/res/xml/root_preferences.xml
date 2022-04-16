@@ -1,0 +1,30 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/display_header">
+
+        <ListPreference
+            app:defaultValue="white"
+            app:entries="@array/background_colors"
+            app:entryValues="@array/background_colors"
+            app:key="background_color"
+            app:title="@string/background_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/math_header">
+
+        <EditTextPreference
+            app:key="accuracy"
+            app:defaultValue="2"
+            app:title="@string/accuracy_title"
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+            />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -58,6 +58,10 @@ class Calculator(private val context: Context, private val viewUpdateObserver: V
 
     fun perform(action: Action) {
         try {
+            if (action != Action.UNDO) {
+                saveState(stack)
+            }
+
             when (action) {
                 Action.AC -> clearValues()
                 Action.DROP -> popValue()

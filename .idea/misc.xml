@@ -3,7 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.18" />
+        <entry key="../../.gradle/caches/transforms-3/8aa9a48ab309a6058d7da29b6c5a2179/transformed/core-1.7.0/res/menu/example_menu.xml" value="0.5657407407407408" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/settings_activity.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/menu.xml" value="0.2490740740740741" />
+        <entry key="app/src/main/res/menu/settings.xml" value="0.31666666666666665" />
+        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.1" />
       </map>
     </option>
   </component>

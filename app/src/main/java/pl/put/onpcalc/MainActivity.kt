@@ -1,6 +1,9 @@
 package pl.put.onpcalc
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.NumberPicker
 import android.widget.TextView
@@ -21,12 +24,28 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         this.stackView = findViewById(R.id.stackView)
         this.stackView.wrapSelectorWheel = false
         this.stackView.displayedValues = arrayOf("No elements")
 
         this.inputValueView = findViewById(R.id.inputView)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.settings, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.settingsButton -> {
+                val intent = Intent(this, SettingsActivity::class.java).apply { }
+                startActivity(intent)
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
     }
 
     fun onClickNumber(v: View) {
