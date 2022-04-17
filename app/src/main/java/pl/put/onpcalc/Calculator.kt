@@ -8,7 +8,11 @@ import java.math.BigDecimal.valueOf
 import java.util.*
 
 
-class Calculator(private val context: Context, private val viewUpdateObserver: ViewUpdateObserver) {
+class Calculator(
+    private val context: Context,
+    private val viewUpdateObserver: ViewUpdateObserver,
+    private val SCALE: Int
+) {
     enum class Operation {
         SUBTRACTION,
         ADDITION,
@@ -26,11 +30,7 @@ class Calculator(private val context: Context, private val viewUpdateObserver: V
         UNDO
     }
 
-
-    private val SCALE: Int = 123
-
     private var stack: Stack<BigDecimal> = Stack()
-
     private val stackStateHolder: Stack<Stack<BigDecimal>> = Stack()
 
 
@@ -160,6 +160,8 @@ class Calculator(private val context: Context, private val viewUpdateObserver: V
             displayToast("Cannot undo previous operation, no previous state record found")
         }
     }
+
+
 }
 
 private fun BigDecimal.sqrt(SCALE: Int): BigDecimal { //no sqrt in java language level 8

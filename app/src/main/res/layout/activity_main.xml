@@ -10,7 +10,7 @@
         android:id="@+id/tableLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:weightSum="7"
+        android:weightSum="8"
         android:stretchColumns="*"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,38 +25,28 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_span="4"
-                >
-
-                <TextView
-                    android:id="@+id/equation"
-                    android:layout_width="match_parent"
-                    android:layout_height="137dp"
-                    android:autoSizeTextType="none"
-                    android:maxLines="1"
-                    android:textSize="34sp" />
-
-                <TextView
-                    android:id="@+id/inputView"
-                    android:layout_width="match_parent"
-                    android:layout_height="137dp"
-                    android:autoSizeTextType="none"
-                    android:maxLines="1"
-                    android:textSize="34sp" />
-
-            </LinearLayout>
-
-
             <NumberPicker
                 android:id="@+id/stackView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_column="4"
-                android:layout_span="1"/>
+                android:layout_column="0"
+                android:layout_span="5" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/inputView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_span="5"
+                android:autoSizeTextType="none"
+                android:maxLines="1"
+                android:textSize="34sp" />
 
 
         </TableRow>

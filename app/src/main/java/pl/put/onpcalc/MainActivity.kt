@@ -1,6 +1,8 @@
 package pl.put.onpcalc
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,15 +11,18 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import java.math.BigDecimal
 import kotlin.streams.toList
 
 class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
-    private val calculator: Calculator = Calculator(this, this)
+    private lateinit var calculator: Calculator
 
     private lateinit var stackView: NumberPicker;
     private lateinit var inputValueView: TextView
+
+    private lateinit var sharedPreferences: SharedPreferences
 
     private var inputValueBuilder: StringBuilder = StringBuilder()
 
@@ -29,6 +34,24 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
         this.stackView.displayedValues = arrayOf("No elements")
 
         this.inputValueView = findViewById(R.id.inputView)
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        setBackgroundFromPreferences();
+        this.calculator = Calculator(
+            this, this,
+            sharedPreferences.getString("accuracy", "2")?.toInt() ?: 2
+        )
+    }
+
+    private fun setBackgroundFromPreferences() {
+        val color: Int = when (sharedPreferences.getString("background_color", "white")) {
+            "grey" -> Color.GRAY
+            "white" -> Color.WHITE
+            "cyan" -> Color.CYAN
+            "green" -> Color.GREEN
+            else -> Color.WHITE
+        }
+        this.stackView.setBackgroundColor(color)
+        this.inputValueView.setBackgroundColor(color)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
