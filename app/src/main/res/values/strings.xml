@@ -12,4 +12,5 @@
 
     <!-- Mathematical Preferences -->
     <string name="accuracy_title">Decimal accuracy</string>
+    <string name="stack_display_size_title">Number of displayed stack values</string>
 </resources>

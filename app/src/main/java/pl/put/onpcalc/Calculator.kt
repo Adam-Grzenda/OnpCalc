@@ -5,6 +5,8 @@ import android.widget.Toast
 import java.math.BigDecimal
 import java.math.BigDecimal.ROUND_HALF_UP
 import java.math.BigDecimal.valueOf
+import java.math.MathContext
+import java.math.RoundingMode
 import java.util.*
 
 
@@ -32,6 +34,8 @@ class Calculator(
 
     private var stack: Stack<BigDecimal> = Stack()
     private val stackStateHolder: Stack<Stack<BigDecimal>> = Stack()
+
+    private val mathContext = MathContext(SCALE, RoundingMode.HALF_UP)
 
 
     fun calculate(operation: Operation) {
@@ -83,7 +87,7 @@ class Calculator(
 
         when (operation) {
             Operation.SQ_ROOT -> pushValue(a.sqrt(SCALE))
-            Operation.SIGN_CHANGE -> pushValue(a.multiply(BigDecimal(-1)))
+            Operation.SIGN_CHANGE -> pushValue(a.multiply(BigDecimal(-1), mathContext))
             else -> throw UnsupportedOperationException("Unexpected unary operation")
         }
 
@@ -98,9 +102,9 @@ class Calculator(
         val value = when (operation) {
             Operation.SUBTRACTION -> b.minus(a)
             Operation.ADDITION -> b.plus(a)
-            Operation.MULTIPLICATION -> b.multiply(a)
-            Operation.DIVISION -> b.divide(a)
-            Operation.EXP -> b.pow(a.intValueExact())   //todo
+            Operation.MULTIPLICATION -> b.multiply(a, mathContext)
+            Operation.DIVISION -> b.divide(a, mathContext)
+            Operation.EXP -> b.pow(a.intValueExact(), mathContext) //todo
             else -> throw UnsupportedOperationException("Unexpected binary operation type")
         }
         pushValue(value)
@@ -108,6 +112,7 @@ class Calculator(
 
 
     fun pushValue(value: BigDecimal) {
+        value.setScale(SCALE, mathContext.roundingMode)
         stack.push(value)
         sendUpdate()
     }
@@ -132,16 +137,15 @@ class Calculator(
     }
 
     private fun swapTopValues() {
-        try {
-            val a = popValue()
-            val b = popValue()
-
-            pushValue(a)
-            pushValue(b)
-        } catch (e: ArithmeticException) {
+        if (stack.size < 2) {
             throw ArithmeticException("Not enough values to swap")
         }
 
+        val a = popValue()
+        val b = popValue()
+
+        pushValue(a)
+        pushValue(b)
     }
 
     private fun displayToast(text: String) {

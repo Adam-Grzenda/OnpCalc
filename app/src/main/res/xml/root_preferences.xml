@@ -12,6 +12,14 @@
             app:title="@string/background_title"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            app:defaultValue="4"
+            app:entries="@array/stack_display_size"
+            app:entryValues="@array/stack_display_size"
+            app:key="stack_display_size"
+            app:title="@string/stack_display_size_title"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/math_header">

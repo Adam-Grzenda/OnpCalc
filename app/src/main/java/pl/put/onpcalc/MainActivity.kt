@@ -7,22 +7,28 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.NumberPicker
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import java.math.BigDecimal
+import java.math.RoundingMode
+import java.util.stream.IntStream
+import kotlin.math.roundToInt
 import kotlin.streams.toList
 
 class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
     private lateinit var calculator: Calculator
 
-    private lateinit var stackView: NumberPicker;
+    private lateinit var stackView: ListView
     private lateinit var inputValueView: TextView
 
     private lateinit var sharedPreferences: SharedPreferences
+    private var stackViewSize: Int = 4
+    private var scale: Int = 2
 
     private var inputValueBuilder: StringBuilder = StringBuilder()
 
@@ -30,16 +36,41 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         this.stackView = findViewById(R.id.stackView)
-        this.stackView.wrapSelectorWheel = false
-        this.stackView.displayedValues = arrayOf("No elements")
+
 
         this.inputValueView = findViewById(R.id.inputView)
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        setBackgroundFromPreferences();
+
+        setupStackView()
+
+
+        this.scale = sharedPreferences.getString("accuracy", "2")?.toInt()!!
+        setBackgroundFromPreferences()
+
         this.calculator = Calculator(
             this, this,
-            sharedPreferences.getString("accuracy", "2")?.toInt() ?: 2
+            scale
         )
+    }
+
+    private fun setupStackView() {
+
+        this.stackViewSize = sharedPreferences.getString("stack_display_size", "4")?.toInt()!!
+
+        this.stackView.adapter =
+            ArrayAdapter(
+                this, R.layout.stack_item,
+                IntStream.range(
+                    1,
+                    stackViewSize + 1
+                ).mapToObj { a ->
+                    "$a."
+                }.toArray()
+            )
+
+        this.stackView.layoutParams.height =
+            (32 * this.resources.displayMetrics.density * stackViewSize).roundToInt()
+
     }
 
     private fun setBackgroundFromPreferences() {
@@ -130,10 +161,22 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
     fun onEnter(view: View) {
         try {
-            calculator.pushValue(inputValueBuilder.toString().toBigDecimal())
-            clearInput()
+            calculator.pushValue(
+                inputValueBuilder.toString().toBigDecimal().setScale(scale)
+            )
         } catch (e: NumberFormatException) {
             Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show()
+        } catch (e: ArithmeticException) {
+            Toast.makeText(
+                this,
+                "Entered value will be rounded, you can change decimal accuracy in settings",
+                Toast.LENGTH_LONG
+            ).show()
+            calculator.pushValue(
+                inputValueBuilder.toString().toBigDecimal().setScale(scale, RoundingMode.HALF_UP)
+            )
+        } finally {
+            clearInput()
         }
     }
 
@@ -155,21 +198,22 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     }
 
     private fun updateStackView(values: List<String>) {
-        stackView.minValue = 0
-        val newMaxValue = values.size - 1
+        val reversedValues = values.reversed()
 
-        if (stackView.maxValue >= newMaxValue) {
-            stackView.maxValue = if (newMaxValue > 0) newMaxValue else 0;
+        val stackValuesFormatted = IntStream.rangeClosed(0, stackViewSize).mapToObj { i ->
+            "${stackViewSize - i - 1}. ${reversedValues.getOrElse(stackViewSize - i - 1) { "" }}"
+        }.toArray()
 
-            if (values.size == 0) {
-                stackView.displayedValues = arrayOf("No elements")
-            } else {
-                stackView.displayedValues = values.toTypedArray()
-            }
-        } else {
-            stackView.displayedValues = values.toTypedArray()
-            stackView.maxValue = newMaxValue
-        }
+        this.stackView.adapter =
+            ArrayAdapter(
+                this, R.layout.stack_item,
+                stackValuesFormatted
+            )
+
+        this.stackView.layoutParams.height =
+            (32 * this.resources.displayMetrics.density * stackViewSize).roundToInt()
+
+
     }
 
     fun onClickBack(view: View) {

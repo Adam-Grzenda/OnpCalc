@@ -25,12 +25,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <NumberPicker
+            <ListView
                 android:id="@+id/stackView"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="125dp"
                 android:layout_column="0"
-                android:layout_span="5" />
+                android:layout_span="5">
+            </ListView>
 
         </TableRow>
 
@@ -46,6 +47,7 @@
                 android:layout_span="5"
                 android:autoSizeTextType="none"
                 android:maxLines="1"
+                android:textAlignment="center"
                 android:textSize="34sp" />
 
 
