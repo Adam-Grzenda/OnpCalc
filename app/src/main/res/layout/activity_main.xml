@@ -74,7 +74,7 @@
                 android:layout_height="match_parent"
                 android:layout_column="1"
                 android:onClick="onClickAction"
-                android:text="drop"
+                android:text="dr\nop"
                 android:layout_marginHorizontal="5dp" />
 
             <Button
@@ -83,7 +83,7 @@
                 android:layout_height="match_parent"
                 android:layout_column="2"
                 android:onClick="onClickAction"
-                android:text="swap"
+                android:text="sw\nap"
                 android:layout_marginHorizontal="5dp"
                 />
 
@@ -93,18 +93,9 @@
                 android:layout_height="match_parent"
                 android:layout_column="3"
                 android:onClick="onClickBack"
-                android:text="Back"
+                android:text="Ba\nck"
                 android:layout_marginHorizontal="5dp"
                 />
-
-            <Button
-                android:id="@+id/undo"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_column="4"
-                android:onClick="onClickAction"
-                android:text="undo"
-                android:layout_marginHorizontal="5dp"/>
 
 
         </TableRow>
@@ -156,7 +147,7 @@
                 android:layout_height="match_parent"
                 android:layout_column="0"
                 android:onClick="onClickOperator"
-                android:text="sqRoot"
+                android:text="SQ\nRT"
                 android:layout_marginHorizontal="5dp"/>
 
 

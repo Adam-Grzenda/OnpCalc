@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
                 R.id.seven -> "7"
                 R.id.eight -> "8"
                 R.id.nine -> "9"
-                R.id.dot -> "." //todo do not allow a dot following another dot
+                R.id.dot -> "."
                 else -> throw UnsupportedOperationException("Input button not mapped for a number")
             }
             inputValueBuilder.append(value)
@@ -166,10 +166,12 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     fun onClickAction(v: View) {
         try {
             val action: Calculator.Action = when (v.id) {
-                R.id.AC -> Calculator.Action.AC
+                R.id.AC -> {
+                    clearInput()
+                    Calculator.Action.AC
+                }
                 R.id.drop -> Calculator.Action.DROP
                 R.id.swap -> Calculator.Action.SWAP
-                R.id.undo -> Calculator.Action.UNDO
                 else -> throw UnsupportedOperationException("Input button not mapped for an action")
             }
             calculator.perform(action)
