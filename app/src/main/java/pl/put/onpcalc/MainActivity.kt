@@ -54,12 +54,9 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
                 return super.onFling(e1, e2, velocityX, velocityY)
             }
         })
-        this.stackView.setOnTouchListener(@SuppressLint("ClickableViewAccessibility")
-        object : View.OnTouchListener {
-            override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-                return detector.onTouchEvent(p1)
-            }
-        })
+        this.stackView.setOnTouchListener(
+            (View.OnTouchListener { _, p1 -> detector.onTouchEvent(p1) })
+        )
 
         this.scale = sharedPreferences.getString("accuracy", "2")?.toInt()!!
         setBackgroundFromPreferences()
