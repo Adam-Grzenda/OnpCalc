@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     private var stackViewSize: Int = 4
     private var scale: Int = 2
 
+    private var currentValues = listOf<BigDecimal>()
     private var inputValueBuilder: StringBuilder = StringBuilder()
 
     @SuppressLint("ClickableViewAccessibility")
@@ -208,9 +209,13 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
     private fun updateInputView(inputValue: String) {
         this.inputValueView.text = inputValue
+        updateStackView(currentValues.stream().map { bigDecimal ->
+            bigDecimal.toString()
+        }.toList())
     }
 
     override fun updateView(newValue: List<BigDecimal>) {
+        this.currentValues = newValue
         updateStackView(
             newValue.stream().map { bigDecimal ->
                 bigDecimal.toString()
@@ -219,17 +224,37 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     }
 
     private fun updateStackView(values: List<String>) {
-        val reversedValues = values.reversed()
+        val mutable = values.toMutableList()
 
-        val stackValuesFormatted = IntStream.rangeClosed(0, stackViewSize - 1).mapToObj { i ->
-            "${stackViewSize - i}. ${reversedValues.getOrElse(stackViewSize - i - 1) { "" }}"
-        }.toArray()
+        if (inputValueBuilder.isEmpty()) {
+            val reversedValues = mutable.reversed()
+            val stackValuesFormatted = IntStream.rangeClosed(0, stackViewSize - 1).mapToObj { i ->
+                "${stackViewSize - i}. ${reversedValues.getOrElse(stackViewSize - i - 1) { "" }}"
+            }.toArray()
 
-        this.stackView.adapter =
-            ArrayAdapter(
-                this, R.layout.stack_item,
-                stackValuesFormatted
-            )
+            this.stackView.adapter =
+                ArrayAdapter(
+                    this, R.layout.stack_item,
+                    stackValuesFormatted
+                )
+
+        } else {
+            mutable.add("")
+            val reversedValues = mutable.reversed()
+            val stackValuesFormatted = IntStream.rangeClosed(0, stackViewSize - 2).mapToObj { i ->
+                "${stackViewSize - i}. ${reversedValues.getOrElse(stackViewSize - i - 1) { "" }}"
+            }.toList().toMutableList()
+
+            stackValuesFormatted.add("->\t$inputValueBuilder")
+
+            this.stackView.adapter =
+                ArrayAdapter(
+                    this, R.layout.stack_item,
+                    stackValuesFormatted.toTypedArray()
+                )
+        }
+
+
 
         this.stackView.layoutParams.height =
             (32 * this.resources.displayMetrics.density * stackViewSize).roundToInt()
