@@ -1,12 +1,11 @@
 package pl.put.onpcalc
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
@@ -32,6 +31,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
     private var inputValueBuilder: StringBuilder = StringBuilder()
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -42,7 +42,26 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         setupStackView()
-
+        val detector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(
+                e1: MotionEvent?,
+                e2: MotionEvent?,
+                velocityX: Float,
+                velocityY: Float
+            ): Boolean {
+                if (velocityX > 0) {
+                    calculator.perform(Calculator.Action.UNDO)
+                }
+                stackView.performClick()
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+        this.stackView.setOnTouchListener(@SuppressLint("ClickableViewAccessibility")
+        object : View.OnTouchListener {
+            override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+                return detector.onTouchEvent(p1)
+            }
+        })
 
         this.scale = sharedPreferences.getString("accuracy", "2")?.toInt()!!
         setBackgroundFromPreferences()
