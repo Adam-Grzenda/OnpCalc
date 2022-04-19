@@ -85,12 +85,17 @@ class Calculator(
         a: BigDecimal
     ) {
         stack.clone()
-
-        when (operation) {
-            Operation.SQ_ROOT -> pushValue(a.sqrt(SCALE))
-            Operation.SIGN_CHANGE -> pushValue(a.multiply(BigDecimal(-1), mathContext))
-            else -> throw UnsupportedOperationException("Unexpected unary operation")
+        try {
+            when (operation) {
+                Operation.SQ_ROOT -> pushValue(a.sqrt(SCALE))
+                Operation.SIGN_CHANGE -> pushValue(a.multiply(BigDecimal(-1), mathContext))
+                else -> throw UnsupportedOperationException("Unexpected unary operation")
+            }
+        } catch (e: NumberFormatException) {
+            restorePreviousState()
+            displayToast("Could not perform operation, cause: ${e.message}")
         }
+
 
     }
 

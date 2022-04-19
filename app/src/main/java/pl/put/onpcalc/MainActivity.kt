@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
@@ -23,7 +22,6 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     private lateinit var calculator: Calculator
 
     private lateinit var stackView: ListView
-    private lateinit var inputValueView: TextView
 
     private lateinit var sharedPreferences: SharedPreferences
     private var stackViewSize: Int = 4
@@ -39,7 +37,6 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
         this.stackView = findViewById(R.id.stackView)
 
 
-        this.inputValueView = findViewById(R.id.inputView)
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         setupStackView()
@@ -89,7 +86,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
             )
 
         this.stackView.layoutParams.height =
-            (32 * this.resources.displayMetrics.density * stackViewSize).roundToInt()
+            (31 * this.resources.displayMetrics.density * stackViewSize).roundToInt()
 
     }
 
@@ -102,7 +99,6 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
             else -> Color.WHITE
         }
         this.stackView.setBackgroundColor(color)
-        this.inputValueView.setBackgroundColor(color)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -139,7 +135,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
                 else -> throw UnsupportedOperationException("Input button not mapped for a number")
             }
             inputValueBuilder.append(value)
-            updateInputView(inputValueBuilder.toString());
+            updateInputView(inputValueBuilder.toString())
 
         } catch (e: UnsupportedOperationException) {
             Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
@@ -208,7 +204,6 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     }
 
     private fun updateInputView(inputValue: String) {
-        this.inputValueView.text = inputValue
         updateStackView(currentValues.stream().map { bigDecimal ->
             bigDecimal.toString()
         }.toList())
@@ -257,7 +252,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
 
         this.stackView.layoutParams.height =
-            (32 * this.resources.displayMetrics.density * stackViewSize).roundToInt()
+            (31 * this.resources.displayMetrics.density * stackViewSize).roundToInt()
 
 
     }

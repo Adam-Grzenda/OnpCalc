@@ -10,7 +10,7 @@
         android:id="@+id/tableLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:weightSum="8"
+        android:weightSum="7"
         android:stretchColumns="*"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,24 +32,6 @@
                 android:layout_column="0"
                 android:layout_span="5">
             </ListView>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/inputView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_span="5"
-                android:autoSizeTextType="none"
-                android:maxLines="1"
-                android:textAlignment="center"
-                android:textSize="34sp" />
-
 
         </TableRow>
 
