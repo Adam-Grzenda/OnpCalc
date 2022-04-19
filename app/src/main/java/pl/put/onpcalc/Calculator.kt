@@ -39,13 +39,13 @@ class Calculator(
 
 
     fun calculate(operation: Operation) {
-        if ((stack.size < 1 && operation == Operation.SQ_ROOT) || (stack.size < 2 && operation != Operation.SQ_ROOT)) {
+        if ((stack.size < 1 && (operation == Operation.SQ_ROOT || operation == Operation.SIGN_CHANGE)) || (stack.size < 2 && operation != Operation.SQ_ROOT && operation != Operation.SIGN_CHANGE)) {
             displayToast("Could not perform operation, not enough values on the stack")
         } else {
             try {
                 saveState(stack)
                 val a = popValue()
-                if (operation == Operation.SQ_ROOT) {
+                if (operation == Operation.SQ_ROOT || operation == Operation.SIGN_CHANGE) {
                     doUnaryOperation(operation, a)
                 } else {
                     val b = popValue()
@@ -53,6 +53,7 @@ class Calculator(
                 }
             } catch (e: ArithmeticException) {
                 displayToast("Could not perform operation: ${e.message}")
+                restorePreviousState()
             } catch (e: UnsupportedOperationException) {
                 displayToast("Unsupported operation: ${e.message}")
             }

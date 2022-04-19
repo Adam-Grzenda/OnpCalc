@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
                     stackViewSize + 1
                 ).mapToObj { a ->
                     "$a."
-                }.toArray()
+                }.toArray().reversed()
             )
 
         this.stackView.layoutParams.height =
@@ -200,8 +200,8 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     private fun updateStackView(values: List<String>) {
         val reversedValues = values.reversed()
 
-        val stackValuesFormatted = IntStream.rangeClosed(0, stackViewSize).mapToObj { i ->
-            "${stackViewSize - i - 1}. ${reversedValues.getOrElse(stackViewSize - i - 1) { "" }}"
+        val stackValuesFormatted = IntStream.rangeClosed(0, stackViewSize - 1).mapToObj { i ->
+            "${stackViewSize - i}. ${reversedValues.getOrElse(stackViewSize - i - 1) { "" }}"
         }.toArray()
 
         this.stackView.adapter =
