@@ -192,9 +192,16 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
     fun onEnter(view: View) {
         try {
-            calculator.pushValue(
-                inputValueBuilder.toString().toBigDecimal().setScale(scale)
-            )
+
+            if (inputValueBuilder.toString() == "") {
+                calculator.pushValue(
+                    calculator.getTopValue().orElseThrow { NumberFormatException() })
+            } else {
+                calculator.pushValue(
+                    inputValueBuilder.toString().toBigDecimal().setScale(scale)
+                )
+            }
+
         } catch (e: NumberFormatException) {
             Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show()
         } catch (e: ArithmeticException) {

@@ -75,7 +75,14 @@ class Calculator(
         } catch (e: ArithmeticException) {
             e.message?.let { displayToast(it) }
         }
+    }
 
+    fun getTopValue(): Optional<BigDecimal> {
+        if (stack.size == 0) {
+            return Optional.empty()
+        } else {
+            return Optional.of(stack.lastElement())
+        }
     }
 
 
@@ -94,8 +101,6 @@ class Calculator(
             restorePreviousState()
             displayToast("Could not perform operation, cause: ${e.message}")
         }
-
-
     }
 
 

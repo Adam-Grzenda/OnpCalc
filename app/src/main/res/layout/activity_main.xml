@@ -31,7 +31,9 @@
                 android:layout_width="0dp"
                 android:layout_height="125dp"
                 android:layout_column="0"
-                android:layout_span="5" />
+                android:layout_span="5"
+                android:padding="2dp"
+                />
 
         </TableRow>
 
