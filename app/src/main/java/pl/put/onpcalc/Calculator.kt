@@ -3,7 +3,6 @@ package pl.put.onpcalc
 import android.content.Context
 import android.widget.Toast
 import java.math.BigDecimal
-import java.math.BigDecimal.ROUND_HALF_UP
 import java.math.BigDecimal.valueOf
 import java.math.MathContext
 import java.math.RoundingMode
@@ -87,7 +86,7 @@ class Calculator(
         stack.clone()
         try {
             when (operation) {
-                Operation.SQ_ROOT -> pushValue(a.sqrt(SCALE))
+                Operation.SQ_ROOT -> pushValue(a.sqrt(mathContext))
                 Operation.SIGN_CHANGE -> pushValue(a.multiply(BigDecimal(-1), mathContext))
                 else -> throw UnsupportedOperationException("Unexpected unary operation")
             }
@@ -110,10 +109,18 @@ class Calculator(
             Operation.ADDITION -> b.plus(a)
             Operation.MULTIPLICATION -> b.multiply(a, mathContext)
             Operation.DIVISION -> b.divide(a, mathContext)
-            Operation.EXP -> b.pow(a.intValueExact(), mathContext) //todo
+            Operation.EXP -> pow(b, a)
             else -> throw UnsupportedOperationException("Unexpected binary operation type")
         }
         pushValue(value)
+    }
+
+    private fun pow(b: BigDecimal, a: BigDecimal): BigDecimal {
+        try {
+            return b.pow(a.intValueExact(), mathContext)
+        } catch (e: ArithmeticException) {
+            throw ArithmeticException("EXP argument has to be an integer")
+        }
     }
 
 
@@ -174,16 +181,16 @@ class Calculator(
 
 }
 
-private fun BigDecimal.sqrt(SCALE: Int): BigDecimal { //no sqrt in java language level 8
+private fun BigDecimal.sqrt(mc: MathContext): BigDecimal { //no sqrt in java language level 8
     val A = this
     val TWO = valueOf(2)
     var x0 = BigDecimal("0")
     var x1 = BigDecimal(Math.sqrt(A.toDouble()))
     while (x0 != x1) {
         x0 = x1
-        x1 = A.divide(x0, SCALE, ROUND_HALF_UP)
+        x1 = A.divide(x0, mc)
         x1 = x1.add(x0)
-        x1 = x1.divide(TWO, SCALE, ROUND_HALF_UP)
+        x1 = x1.divide(TWO, mc)
     }
     return x1
 }
