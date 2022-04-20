@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OnpCalc</string>
+    <string name="app_name">RPN Calculator</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
@@ -7,10 +7,11 @@
     <string name="math_header">Mathematical</string>
 
     <!-- Display Preferences -->
-    <string name="background_title">Background color</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="stack_background_title">Stack background color</string>
 
     <!-- Mathematical Preferences -->
     <string name="accuracy_title">Decimal accuracy</string>
     <string name="stack_display_size_title">Number of displayed stack values</string>
+    <string name="accuracy_summary">Specify number of digits after decimal point</string>
+    <string name="background_title">Main background color</string>
 </resources>

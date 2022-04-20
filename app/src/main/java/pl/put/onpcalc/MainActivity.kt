@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.preference.PreferenceManager
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -19,6 +20,7 @@ import kotlin.streams.toList
 
 class MainActivity : AppCompatActivity(), ViewUpdateObserver {
 
+    private lateinit var mainView: ConstraintLayout
     private lateinit var calculator: Calculator
 
     private lateinit var stackView: ListView
@@ -35,7 +37,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         this.stackView = findViewById(R.id.stackView)
-
+        this.mainView = findViewById(R.id.main_layout)
 
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
@@ -88,14 +90,28 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
     }
 
     private fun setBackgroundFromPreferences() {
-        val color: Int = when (sharedPreferences.getString("background_color", "white")) {
+        val mainColor: Int =
+            getColorFromPreferenceString(sharedPreferences.getString("background_color", "white"))
+
+        val stackColor: Int = getColorFromPreferenceString(
+            sharedPreferences.getString(
+                "stack_background_color",
+                "white"
+            )
+        )
+        mainView.setBackgroundColor(mainColor)
+        stackView.setBackgroundColor(stackColor)
+    }
+
+    private fun getColorFromPreferenceString(backgroundPreference: String?): Int {
+        val color: Int = when (backgroundPreference) {
             "grey" -> Color.GRAY
             "white" -> Color.WHITE
             "cyan" -> Color.CYAN
             "green" -> Color.GREEN
             else -> Color.WHITE
         }
-        this.stackView.setBackgroundColor(color)
+        return color
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
