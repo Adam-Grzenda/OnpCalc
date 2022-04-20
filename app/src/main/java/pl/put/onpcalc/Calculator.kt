@@ -78,10 +78,10 @@ class Calculator(
     }
 
     fun getTopValue(): Optional<BigDecimal> {
-        if (stack.size == 0) {
-            return Optional.empty()
+        return if (stack.size == 0) {
+            Optional.empty()
         } else {
-            return Optional.of(stack.lastElement())
+            Optional.of(stack.lastElement())
         }
     }
 
@@ -90,7 +90,6 @@ class Calculator(
         operation: Operation,
         a: BigDecimal
     ) {
-        stack.clone()
         try {
             when (operation) {
                 Operation.SQ_ROOT -> pushValue(a.sqrt(mathContext))
@@ -128,6 +127,11 @@ class Calculator(
         }
     }
 
+
+    fun addElement(value: BigDecimal) {
+        saveState(stack)
+        pushValue(value)
+    }
 
     fun pushValue(value: BigDecimal) {
         value.setScale(SCALE, mathContext.roundingMode)

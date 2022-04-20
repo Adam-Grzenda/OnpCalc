@@ -194,10 +194,10 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
         try {
 
             if (inputValueBuilder.toString() == "") {
-                calculator.pushValue(
+                calculator.addElement(
                     calculator.getTopValue().orElseThrow { NumberFormatException() })
             } else {
-                calculator.pushValue(
+                calculator.addElement(
                     inputValueBuilder.toString().toBigDecimal().setScale(scale)
                 )
             }
@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity(), ViewUpdateObserver {
                 "Entered value will be rounded, you can change decimal accuracy in settings",
                 Toast.LENGTH_LONG
             ).show()
-            calculator.pushValue(
+            calculator.addElement(
                 inputValueBuilder.toString().toBigDecimal().setScale(scale, RoundingMode.HALF_UP)
             )
         } finally {
